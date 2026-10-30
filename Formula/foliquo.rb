@@ -7,12 +7,12 @@ class Foliquo < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.11.10/Foliquo-Community-0.11.10-macOS-arm64.tar.gz"
-      sha256 "c34ad967de39cfc5ef5c783c2489bb68e9f59b7c16bafecdbdb7dcafaaf96a8f"
+      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.11.11/Foliquo-Community-0.11.11-macOS-arm64.tar.gz"
+      sha256 "c64a9ac7bd25f94cfa33c5e53b5320deb4739ababfdce716e5a984ad65cf3814"
     end
     on_intel do
-      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.11.10/Foliquo-Community-0.11.10-macOS-x64.tar.gz"
-      sha256 "719f7479f10e3d786fd853e9b6382653d369f40f8ab8bd0e9b81b16645f97eed"
+      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.11.11/Foliquo-Community-0.11.11-macOS-x64.tar.gz"
+      sha256 "b38bed9605429f0d0a1412f7951fea8be1d02bb0b846b35556fd9a787568aea5"
     end
   end
 
