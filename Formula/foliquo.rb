@@ -7,12 +7,12 @@ class Foliquo < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.12.0/Foliquo-Community-0.12.0-macOS-arm64.tar.gz"
-      sha256 "d78fcff207ba0b8076d7872c72260ae50a49e1f26d57136ba81f081c8ca1eb4f"
+      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.13.0/Foliquo-Community-0.13.0-macOS-arm64.tar.gz"
+      sha256 "1efb729d895ce5b86f117fa6611fd89a8694fa3e987a6fc1669ce4bd9e5e6a0c"
     end
     on_intel do
-      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.12.0/Foliquo-Community-0.12.0-macOS-x64.tar.gz"
-      sha256 "160aab567c0da5bd0937925aadd762050c7bf491110f314e22547181ea74a192"
+      url "https://github.com/gitmaximilian/Foliquo/releases/download/v0.13.0/Foliquo-Community-0.13.0-macOS-x64.tar.gz"
+      sha256 "58bd8f7db34c34cd8945d627c7f4dfad81dac7687df038516d3b8ad73eff714a"
     end
   end
 
@@ -49,8 +49,17 @@ class Foliquo < Formula
     ENV["FOLIQUO_PORT"] = free_port.to_s
     pid = fork { exec bin/"foliquo" }
     begin
-      sleep 3
-      assert_match "foliquo", shell_output("curl --fail --silent http://127.0.0.1:#{ENV.fetch("FOLIQUO_PORT")}/api/health")
+      health_url = "http://127.0.0.1:#{ENV.fetch("FOLIQUO_PORT")}/api/health"
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 60
+      loop do
+        IO.popen(["curl", "--fail", "--silent", "--max-time", "1", health_url], err: File::NULL, &:read)
+        break if Process.last_status.success?
+
+        assert_operator Process.clock_gettime(Process::CLOCK_MONOTONIC), :<, deadline,
+                        "The Foliquo service did not become ready within 60 seconds"
+        sleep 0.2
+      end
+      assert_match "foliquo", shell_output("curl --fail --silent #{health_url}")
       system bin/"foliquo"
       system bin/"foliquo", "stop"
       Process.wait pid
